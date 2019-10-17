@@ -16,6 +16,7 @@
 #include "copyright.h"
 #include "filesys.h"
 #include <string.h>
+#include "machine.h"
 
 #define UserStackSize		1024 	// increase this as necessary!
 
@@ -41,6 +42,10 @@ class AddrSpace {
 
     void InitRegisters();		// Initialize user-level CPU registers,
 					// before jumping to user code
+
+    static unsigned UnusedPhyPage[NumPhysPages];
+    static bool IsInit;
+    static unsigned UnusedPhyPagePtr;
 
 };
 
