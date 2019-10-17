@@ -45,7 +45,7 @@ class AddrSpace {
 
     static unsigned UnusedPhyPage[NumPhysPages];
     static bool IsInit;
-    static unsigned UnusedPhyPagePtr;
+    static unsigned UnusedPhyPageStart, UnusedPhyPageEnd, RemainPhyPages;
 
 };
 

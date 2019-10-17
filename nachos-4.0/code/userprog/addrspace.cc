@@ -45,7 +45,9 @@ SwapHeader (NoffHeader *noffH)
 
 bool AddrSpace::IsInit = false;
 unsigned AddrSpace::UnusedPhyPage[NumPhysPages] = {0};
-unsigned AddrSpace::UnusedPhyPagePtr = NumPhysPages;
+unsigned AddrSpace::UnusedPhyPageStart = 0;
+unsigned AddrSpace::UnusedPhyPageEnd = 0;
+unsigned AddrSpace::RemainPhyPages = NumPhysPages;
 
 //----------------------------------------------------------------------
 // AddrSpace::AddrSpace
@@ -58,22 +60,10 @@ unsigned AddrSpace::UnusedPhyPagePtr = NumPhysPages;
 AddrSpace::AddrSpace()
 {
     if(!IsInit){
-        for(unsigned i = 0; i < NumPhysPages; ++i)AddrSpace::UnusedPhyPage[i] = NumPhysPages -1 -i;
+        for(unsigned i = 0; i < NumPhysPages; ++i)AddrSpace::UnusedPhyPage[i] = i;
         IsInit = true;
     }
     pageTable = 0;
-//     pageTable = new TranslationEntry[NumPhysPages];
-//     for (unsigned int i = 0; i < NumPhysPages; i++) {
-// 	pageTable[i].virtualPage = i;	// for now, virt page # = phys page #
-// 	pageTable[i].physicalPage = i;
-// //	pageTable[i].physicalPage = 0;
-// 	pageTable[i].valid = TRUE;
-// //	pageTable[i].valid = FALSE;
-// 	pageTable[i].use = FALSE;
-// 	pageTable[i].dirty = FALSE;
-// 	pageTable[i].readOnly = FALSE;  
-//     }
-    
     // zero out the entire address space
 //    bzero(kernel->machine->mainMemory, MemorySize);
 }
@@ -87,10 +77,11 @@ AddrSpace::~AddrSpace()
 {
    if(pageTable){
        for(unsigned i = 0; i < numPages; ++i){
-           UnusedPhyPage[UnusedPhyPagePtr] = pageTable[i].physicalPage;
-           ++UnusedPhyPagePtr;
+           UnusedPhyPage[UnusedPhyPageEnd] = pageTable[i].physicalPage;
+           UnusedPhyPageEnd = (UnusedPhyPageEnd == NumPhysPages-1) ? 0 : UnusedPhyPageEnd+1;
        }
        
+       RemainPhyPages += numPages;
        delete pageTable;
    }
 }
@@ -131,23 +122,22 @@ AddrSpace::Load(char *fileName)
 //	cout << "number of pages of " << fileName<< " is "<<numPages<<endl;
     size = numPages * PageSize;
 
-
-    ASSERT(numPages <= NumPhysPages);		// check we're not trying
+    ASSERT(numPages <= RemainPhyPages);		// check we're not trying
 						// to run anything too big --
 						// at least until we have
 						// virtual memory
 
+    RemainPhyPages -= numPages;
     pageTable = new TranslationEntry[numPages];
     for(unsigned i = 0; i < numPages; ++i){
         pageTable[i].virtualPage = i;
-        pageTable[i].physicalPage = UnusedPhyPage[UnusedPhyPagePtr-1];
+        pageTable[i].physicalPage = UnusedPhyPage[UnusedPhyPageStart];
         pageTable[i].valid = TRUE;
-//   	pageTable[i].valid = FALSE;
         pageTable[i].use = FALSE;
         pageTable[i].dirty = FALSE;
         pageTable[i].readOnly = FALSE;
 
-        --UnusedPhyPagePtr;
+        UnusedPhyPageStart = (UnusedPhyPageStart == NumPhysPages-1) ? 0 : UnusedPhyPageStart+1;
     }
 
     DEBUG(dbgAddr, "Initializing address space: " << numPages << ", " << size);
