@@ -157,14 +157,14 @@ AddrSpace::Load(char *fileName)
         DEBUG(dbgAddr, "Initializing code segment.");
 	DEBUG(dbgAddr, noffH.code.virtualAddr << ", " << noffH.code.size);
         	executable->ReadAt(
-		&(kernel->machine->mainMemory[pageTable[noffH.code.virtualAddr/PageSize].physicalPage + noffH.code.virtualAddr % PageSize]), 
+		&(kernel->machine->mainMemory[pageTable[noffH.code.virtualAddr/PageSize].physicalPage * PageSize + noffH.code.virtualAddr % PageSize]), 
 			noffH.code.size, noffH.code.inFileAddr);
     }
 	if (noffH.initData.size > 0) {
         DEBUG(dbgAddr, "Initializing data segment.");
 	DEBUG(dbgAddr, noffH.initData.virtualAddr << ", " << noffH.initData.size);
         executable->ReadAt(
-		&(kernel->machine->mainMemory[pageTable[noffH.initData.virtualAddr/PageSize].physicalPage + noffH.initData.virtualAddr % PageSize]),
+		&(kernel->machine->mainMemory[pageTable[noffH.initData.virtualAddr/PageSize].physicalPage * PageSize + noffH.initData.virtualAddr % PageSize]),
 			noffH.initData.size, noffH.initData.inFileAddr);
     }
 
