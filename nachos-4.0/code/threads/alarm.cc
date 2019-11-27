@@ -20,8 +20,7 @@
 //		occur at random, instead of fixed, intervals.
 //----------------------------------------------------------------------
 
-Alarm::Alarm(bool doRandom)
-{
+Alarm::Alarm(bool doRandom) :  current(0) {
     timer = new Timer(doRandom, this);
 }
 
@@ -46,18 +45,39 @@ Alarm::Alarm(bool doRandom)
 //	interrupts.  In this case, we can safely halt.
 //----------------------------------------------------------------------
 
-void 
-Alarm::CallBack() 
-{
+void Alarm::WaitUntil(int val){
+    IntStatus oldLevel = kernel->interrupt->SetLevel(IntOff);
+    cout << "Thread "<<kernel->currentThread->getName() << " waits until " << val << "(ms)" << endl;
+    sleeping_threads.Append(thread_clk(kernel->currentThread, current + val));
+    kernel->currentThread->Sleep(false);
+    kernel->interrupt->SetLevel(oldLevel);
+}
+
+void Alarm::CallBack() {
     Interrupt *interrupt = kernel->interrupt;
     MachineStatus status = interrupt->getStatus();
+
+    ++current;
+    bool woken = false;
+
+    for(ListIterator<thread_clk> it(&sleeping_threads); !it.IsDone(); it.Next()){
+        if(it.Item().second < current){
+            woken = true;
+            cout << "Thread "<<kernel->currentThread->getName() << " is Called back" << endl;
+            kernel->scheduler->ReadyToRun(it.Item().first);
+            sleeping_threads.Remove(it.Item());
+
+            break;
+        }
+    }
+
     
-    if (status == IdleMode) {	// is it time to quit?
+    if (status == IdleMode && ~woken && sleeping_threads.IsEmpty()) {	// is it time to quit?
         if (!interrupt->AnyFutureInterrupts()) {
-	    timer->Disable();	// turn off the timer
-	}
+	        timer->Disable();	// turn off the timer
+	    }
     } else {			// there's someone to preempt
-	interrupt->YieldOnReturn();
+	    interrupt->YieldOnReturn();
     }
 }
 

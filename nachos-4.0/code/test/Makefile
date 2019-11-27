@@ -19,10 +19,10 @@ CPPFLAGS = $(INCDIR)
 
 
 # if you aren't cross-compiling:
-#GCCDIR =
-#LDFLAGS = -N -T 0
-#ASFLAGS =
-#CPPFLAGS = -P $(INCDIR)
+# GCCDIR =
+# LDFLAGS = -N -T 0
+# ASFLAGS =
+# CPPFLAGS = -P $(INCDIR)
 
 
 CC = $(GCCDIR)gcc
@@ -33,7 +33,7 @@ CPP = /lib/cpp
 INCDIR =-I../userprog -I../threads -I../lib
 CFLAGS = -G 0 -c $(INCDIR)
 
-all: halt shell matmult sort test1 test2
+all: halt shell matmult sort test1 test2 sleep
 
 start.o: start.s ../userprog/syscall.h
 	$(CPP) $(CPPFLAGS) start.s > strt.s
@@ -71,5 +71,9 @@ test1: test1.o start.o
 test2: test2.o start.o
 	$(LD) $(LDFLAGS) start.o test2.o -o test2.coff
 	../bin/coff2noff test2.coff test2
+
+sleep: sleep.o start.o
+	$(LD) $(LDFLAGS) sleep.o start.o -o sleep.coff
+	../bin/coff2noff sleep.coff sleep
 
 
