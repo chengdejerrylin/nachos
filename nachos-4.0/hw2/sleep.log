@@ -1,0 +1,114 @@
+Total threads number is 2
+Thread test/sleep is executing.
+Thread test/sleep1 is executing.
+Sleep Time:1000000(ms).
+Thread test/sleep waits until 1000000(ms)
+Sleep Time:100000(ms).
+Thread test/sleep1 waits until 100000(ms)
+Thread test/sleep1 is Called back
+Print integer:10
+Sleep Time:100000(ms).
+Thread test/sleep1 waits until 100000(ms)
+Thread test/sleep1 is Called back
+Print integer:10
+Sleep Time:100000(ms).
+Thread test/sleep1 waits until 100000(ms)
+Thread test/sleep1 is Called back
+Print integer:10
+Sleep Time:100000(ms).
+Thread test/sleep1 waits until 100000(ms)
+Thread test/sleep1 is Called back
+Print integer:10
+Sleep Time:100000(ms).
+Thread test/sleep1 waits until 100000(ms)
+Thread test/sleep1 is Called back
+Print integer:10
+Sleep Time:100000(ms).
+Thread test/sleep1 waits until 100000(ms)
+Thread test/sleep1 is Called back
+Print integer:10
+Sleep Time:100000(ms).
+Thread test/sleep1 waits until 100000(ms)
+Thread test/sleep1 is Called back
+Print integer:10
+Sleep Time:100000(ms).
+Thread test/sleep1 waits until 100000(ms)
+Thread test/sleep1 is Called back
+Print integer:10
+Sleep Time:100000(ms).
+Thread test/sleep1 waits until 100000(ms)
+Thread test/sleep1 is Called back
+Print integer:10
+Sleep Time:100000(ms).
+Thread test/sleep1 waits until 100000(ms)
+Thread test/sleep1 is Called back
+Print integer:2222
+Sleep Time:1000000(ms).
+Thread test/sleep waits until 1000000(ms)
+Thread test/sleep is Called back
+Print integer:10
+Sleep Time:100000(ms).
+Thread test/sleep1 waits until 100000(ms)
+Thread test/sleep1 is Called back
+Print integer:10
+Sleep Time:100000(ms).
+Thread test/sleep1 waits until 100000(ms)
+Thread test/sleep1 is Called back
+Print integer:10
+Sleep Time:100000(ms).
+Thread test/sleep1 waits until 100000(ms)
+Thread test/sleep1 is Called back
+Print integer:10
+Sleep Time:100000(ms).
+Thread test/sleep1 waits until 100000(ms)
+Thread test/sleep1 is Called back
+Print integer:10
+Sleep Time:100000(ms).
+Thread test/sleep1 waits until 100000(ms)
+Thread test/sleep1 is Called back
+Print integer:10
+Sleep Time:100000(ms).
+Thread test/sleep1 waits until 100000(ms)
+Thread test/sleep1 is Called back
+Print integer:10
+Sleep Time:100000(ms).
+Thread test/sleep1 waits until 100000(ms)
+Thread test/sleep1 is Called back
+Print integer:10
+Sleep Time:100000(ms).
+Thread test/sleep1 waits until 100000(ms)
+Thread test/sleep1 is Called back
+Print integer:10
+Sleep Time:100000(ms).
+Thread test/sleep1 waits until 100000(ms)
+Thread test/sleep1 is Called back
+Print integer:10
+Sleep Time:100000(ms).
+Thread test/sleep1 waits until 100000(ms)
+Thread test/sleep1 is Called back
+Print integer:2222
+Sleep Time:1000000(ms).
+Thread test/sleep waits until 1000000(ms)
+Thread test/sleep is Called back
+Print integer:10
+return value:0
+Thread test/sleep1 is Called back
+Print integer:2222
+Sleep Time:1000000(ms).
+Thread test/sleep waits until 1000000(ms)
+Thread test/sleep is Called back
+Print integer:2222
+Sleep Time:1000000(ms).
+Thread test/sleep waits until 1000000(ms)
+Thread test/sleep is Called back
+Print integer:2222
+return value:0
+No threads ready or runnable, and no pending interrupts.
+Assuming the program completed.
+Machine halting!
+
+Ticks: total 500000600, idle 499999421, system 550, user 629
+Disk I/O: reads 0, writes 0
+Console I/O: reads 0, writes 0
+Paging: faults 0
+Network I/O: packets received 0, sent 0

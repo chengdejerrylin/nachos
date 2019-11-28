@@ -21,8 +21,8 @@
 #include "utility.h"
 #include "callback.h"
 #include "timer.h"
-#include "list.h"
 #include "thread.h"
+#include <vector>
 #include <utility>
 
 // The following class defines a software alarm clock. 
@@ -37,7 +37,7 @@ class Alarm : public CallBackObj {
   private:
     typedef std::pair<Thread*, int> thread_clk;
     Timer *timer;		// the hardware timer device
-    List<thread_clk> sleeping_threads;
+    std::vector<thread_clk> sleeping_threads;
     int current;
 
     void CallBack();		// called when the hardware

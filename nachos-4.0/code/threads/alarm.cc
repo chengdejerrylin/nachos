@@ -47,9 +47,10 @@ Alarm::Alarm(bool doRandom) :  current(0) {
 
 void Alarm::WaitUntil(int val){
     IntStatus oldLevel = kernel->interrupt->SetLevel(IntOff);
-    cout << "Thread "<<kernel->currentThread->getName() << " waits until " << val << "(ms)" << endl;
-    sleeping_threads.Append(thread_clk(kernel->currentThread, current + val));
-    kernel->currentThread->Sleep(false);
+    Thread* t = kernel->currentThread;
+    cout << "Thread "<<t->getName() << " waits until " << val << "(ms)" << endl;
+    sleeping_threads.push_back(thread_clk(t, current + val));
+    t->Sleep(false);
     kernel->interrupt->SetLevel(oldLevel);
 }
 
@@ -60,19 +61,19 @@ void Alarm::CallBack() {
     ++current;
     bool woken = false;
 
-    for(ListIterator<thread_clk> it(&sleeping_threads); !it.IsDone(); it.Next()){
-        if(it.Item().second < current){
+    for(unsigned i = 0; i < sleeping_threads.size(); ){
+        thread_clk it = sleeping_threads[i];
+
+        if(it.second < current){
             woken = true;
             cout << "Thread "<<kernel->currentThread->getName() << " is Called back" << endl;
-            kernel->scheduler->ReadyToRun(it.Item().first);
-            sleeping_threads.Remove(it.Item());
-
-            break;
-        }
+            kernel->scheduler->ReadyToRun(it.first);
+            sleeping_threads.erase(sleeping_threads.begin() + i);
+        } else ++i;
     }
 
     
-    if (status == IdleMode && ~woken && sleeping_threads.IsEmpty()) {	// is it time to quit?
+    if (status == IdleMode && !woken && sleeping_threads.empty()) {	// is it time to quit?
         if (!interrupt->AnyFutureInterrupts()) {
 	        timer->Disable();	// turn off the timer
 	    }
