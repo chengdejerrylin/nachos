@@ -212,6 +212,8 @@ Scheduler::Print()
 
 bool Scheduler::Yield(){
 
+    return schedulerType == RR ;
+    
     if(schedulerType != RR)return false;
     return kernel->stats->userTicks - time > QUANTUM;
 

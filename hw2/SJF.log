@@ -1,0 +1,41 @@
+*** thread 0 looped 0 times
+*** thread 1 looped 0 times
+*** thread 0 looped 1 times
+*** thread 1 looped 1 times
+*** thread 0 looped 2 times
+*** thread 1 looped 2 times
+*** thread 0 looped 3 times
+*** thread 1 looped 3 times
+*** thread 0 looped 4 times
+*** thread 1 looped 4 times
+A: remaining 2
+A: remaining 1
+A: remaining 0
+D: remaining 2
+D: remaining 1
+D: remaining 0
+C: remaining 6
+C: remaining 5
+C: remaining 4
+C: remaining 3
+C: remaining 2
+C: remaining 1
+C: remaining 0
+B: remaining 8
+B: remaining 7
+B: remaining 6
+B: remaining 5
+B: remaining 4
+B: remaining 3
+B: remaining 2
+B: remaining 1
+B: remaining 0
+No threads ready or runnable, and no pending interrupts.
+Assuming the program completed.
+Machine halting!
+
+Ticks: total 2600, idle 60, system 2540, user 0
+Disk I/O: reads 0, writes 0
+Console I/O: reads 0, writes 0
+Paging: faults 0
+Network I/O: packets received 0, sent 0
