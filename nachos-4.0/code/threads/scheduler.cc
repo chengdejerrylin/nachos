@@ -22,6 +22,21 @@
 #include "debug.h"
 #include "scheduler.h"
 #include "main.h"
+#include "list.h"
+
+#define QUANTUM 3
+
+
+int SJFCompare(Thread *a, Thread *b) {
+    if(a->getBurstTime() == b->getBurstTime())
+        return 0;
+    return a->getBurstTime() > b->getBurstTime() ? 1 : -1;
+}
+int PriorityCompare(Thread *a, Thread *b) {
+    if(a->getPriority() == b->getPriority())
+        return 0;
+    return a->getPriority() > b->getPriority() ? 1 : -1;
+}
 
 //----------------------------------------------------------------------
 // Scheduler::Scheduler
@@ -29,10 +44,19 @@
 //	Initially, no ready threads.
 //----------------------------------------------------------------------
 
-Scheduler::Scheduler()
+Scheduler::Scheduler(SchedulerType type) : schedulerType(type)
 {
-//	schedulerType = type;
-	readyList = new List<Thread *>; 
+	switch(schedulerType) {
+    case RR:
+        readyList = new List<Thread *>;
+        break;
+    case SJF:
+        readyList = new SortedList<Thread *>(SJFCompare);
+        break;
+    case Priority:
+        readyList = new SortedList<Thread *>(PriorityCompare);
+        break;
+    } 
 	toBeDestroyed = NULL;
 } 
 
@@ -127,6 +151,7 @@ Scheduler::Run (Thread *nextThread, bool finishing)
 
     kernel->currentThread = nextThread;  // switch to the next thread
     nextThread->setStatus(RUNNING);      // nextThread is now running
+    time = kernel->stats->userTicks;
     
     DEBUG(dbgThread, "Switching from: " << oldThread->getName() << " to: " << nextThread->getName());
     
@@ -183,4 +208,11 @@ Scheduler::Print()
 {
     cout << "Ready list contents:\n";
     readyList->Apply(ThreadPrint);
+}
+
+bool Scheduler::Yield(){
+
+    if(schedulerType != RR)return false;
+    return kernel->stats->userTicks - time > QUANTUM;
+
 }

@@ -57,6 +57,15 @@ NetKernel::Initialize()
     postOfficeOut = new PostOfficeOutput(reliability, 10);
 }
 
+void
+NetKernel::Initialize(SchedulerType type)
+{
+    UserProgKernel::Initialize(type);	// init other kernel data structs
+
+    postOfficeIn = new PostOfficeInput(10);
+    postOfficeOut = new PostOfficeOutput(reliability, 10);
+}
+
 //----------------------------------------------------------------------
 // NetKernel::~NetKernel
 // 	Nachos is halting.  De-allocate global data structures.

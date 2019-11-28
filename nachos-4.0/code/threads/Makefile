@@ -479,11 +479,12 @@ interrupt.o: ../machine/interrupt.cc /usr/include/stdc-predef.h \
  /usr/include/i386-linux-gnu/bits/stdlib-float.h /usr/include/libio.h \
  /usr/include/_G_config.h /usr/include/i386-linux-gnu/bits/stdio_lim.h \
  /usr/include/i386-linux-gnu/bits/sys_errlist.h /usr/include/string.h \
- ../lib/list.cc ../machine/callback.h ../threads/main.h ../lib/debug.h \
- ../threads/kernel.h ../lib/utility.h ../threads/thread.h ../lib/sysdep.h \
- ../threads/scheduler.h ../machine/interrupt.h ../machine/stats.h \
- ../threads/alarm.h ../machine/callback.h ../machine/timer.h \
- /usr/include/c++/4.8/vector /usr/include/c++/4.8/bits/stl_construct.h \
+ ../lib/list.cc ../machine/callback.h ../threads/scheduler.h \
+ ../threads/thread.h ../lib/utility.h ../lib/sysdep.h ../threads/main.h \
+ ../lib/debug.h ../threads/kernel.h ../threads/scheduler.h \
+ ../machine/interrupt.h ../machine/stats.h ../threads/alarm.h \
+ ../machine/callback.h ../machine/timer.h /usr/include/c++/4.8/vector \
+ /usr/include/c++/4.8/bits/stl_construct.h \
  /usr/include/c++/4.8/ext/alloc_traits.h \
  /usr/include/c++/4.8/bits/stl_uninitialized.h \
  /usr/include/c++/4.8/bits/stl_vector.h \
@@ -667,9 +668,9 @@ timer.o: ../machine/timer.cc /usr/include/stdc-predef.h \
  /usr/include/i386-linux-gnu/bits/sys_errlist.h /usr/include/string.h \
  ../threads/kernel.h ../threads/thread.h ../lib/sysdep.h \
  ../threads/scheduler.h ../lib/list.h ../lib/debug.h ../lib/list.cc \
- ../machine/interrupt.h ../machine/stats.h ../threads/alarm.h \
- ../machine/callback.h ../machine/timer.h /usr/include/c++/4.8/vector \
- /usr/include/c++/4.8/bits/stl_construct.h \
+ ../machine/interrupt.h ../threads/scheduler.h ../machine/stats.h \
+ ../threads/alarm.h ../machine/callback.h ../machine/timer.h \
+ /usr/include/c++/4.8/vector /usr/include/c++/4.8/bits/stl_construct.h \
  /usr/include/c++/4.8/ext/alloc_traits.h \
  /usr/include/c++/4.8/bits/stl_uninitialized.h \
  /usr/include/c++/4.8/bits/stl_vector.h \
@@ -773,7 +774,7 @@ alarm.o: ../threads/alarm.cc /usr/include/stdc-predef.h \
  /usr/include/c++/4.8/bits/stl_relops.h ../threads/main.h ../lib/debug.h \
  ../lib/utility.h ../lib/sysdep.h ../threads/kernel.h \
  ../threads/scheduler.h ../lib/list.h ../lib/debug.h ../lib/list.cc \
- ../machine/interrupt.h ../machine/stats.h
+ ../machine/interrupt.h ../threads/scheduler.h ../machine/stats.h
 kernel.o: ../threads/kernel.cc /usr/include/stdc-predef.h \
  ../lib/copyright.h ../lib/debug.h ../lib/copyright.h ../lib/utility.h \
  ../lib/sysdep.h /usr/include/c++/4.8/iostream \
@@ -863,9 +864,9 @@ kernel.o: ../threads/kernel.cc /usr/include/stdc-predef.h \
  ../threads/main.h ../threads/kernel.h ../lib/utility.h \
  ../threads/thread.h ../lib/sysdep.h ../threads/scheduler.h ../lib/list.h \
  ../lib/debug.h ../lib/list.cc ../machine/interrupt.h \
- ../machine/callback.h ../machine/stats.h ../threads/alarm.h \
- ../machine/callback.h ../machine/timer.h /usr/include/c++/4.8/vector \
- /usr/include/c++/4.8/bits/stl_construct.h \
+ ../machine/callback.h ../threads/scheduler.h ../machine/stats.h \
+ ../threads/alarm.h ../machine/callback.h ../machine/timer.h \
+ /usr/include/c++/4.8/vector /usr/include/c++/4.8/bits/stl_construct.h \
  /usr/include/c++/4.8/ext/alloc_traits.h \
  /usr/include/c++/4.8/bits/stl_uninitialized.h \
  /usr/include/c++/4.8/bits/stl_vector.h \
@@ -962,9 +963,10 @@ main.o: ../threads/main.cc /usr/include/stdc-predef.h ../lib/copyright.h \
  /usr/include/i386-linux-gnu/bits/sys_errlist.h /usr/include/string.h \
  ../threads/kernel.h ../lib/utility.h ../threads/thread.h ../lib/sysdep.h \
  ../threads/scheduler.h ../lib/list.h ../lib/debug.h ../lib/list.cc \
- ../machine/interrupt.h ../machine/callback.h ../machine/stats.h \
- ../threads/alarm.h ../machine/callback.h ../machine/timer.h \
- /usr/include/c++/4.8/vector /usr/include/c++/4.8/bits/stl_construct.h \
+ ../machine/interrupt.h ../machine/callback.h ../threads/scheduler.h \
+ ../machine/stats.h ../threads/alarm.h ../machine/callback.h \
+ ../machine/timer.h /usr/include/c++/4.8/vector \
+ /usr/include/c++/4.8/bits/stl_construct.h \
  /usr/include/c++/4.8/ext/alloc_traits.h \
  /usr/include/c++/4.8/bits/stl_uninitialized.h \
  /usr/include/c++/4.8/bits/stl_vector.h \
@@ -1060,8 +1062,8 @@ scheduler.o: ../threads/scheduler.cc /usr/include/stdc-predef.h \
  ../threads/scheduler.h ../lib/list.h ../lib/debug.h ../lib/list.cc \
  ../threads/thread.h ../lib/utility.h ../lib/sysdep.h ../threads/main.h \
  ../threads/kernel.h ../machine/interrupt.h ../machine/callback.h \
- ../machine/stats.h ../threads/alarm.h ../machine/callback.h \
- ../machine/timer.h /usr/include/c++/4.8/vector \
+ ../threads/scheduler.h ../machine/stats.h ../threads/alarm.h \
+ ../machine/callback.h ../machine/timer.h /usr/include/c++/4.8/vector \
  /usr/include/c++/4.8/bits/stl_construct.h \
  /usr/include/c++/4.8/ext/alloc_traits.h \
  /usr/include/c++/4.8/bits/stl_uninitialized.h \
@@ -1159,8 +1161,8 @@ synch.o: ../threads/synch.cc /usr/include/stdc-predef.h \
  ../lib/list.h ../lib/debug.h ../lib/utility.h ../lib/sysdep.h \
  ../lib/list.cc ../threads/main.h ../lib/debug.h ../threads/kernel.h \
  ../threads/scheduler.h ../machine/interrupt.h ../machine/callback.h \
- ../machine/stats.h ../threads/alarm.h ../machine/callback.h \
- ../machine/timer.h /usr/include/c++/4.8/vector \
+ ../threads/scheduler.h ../machine/stats.h ../threads/alarm.h \
+ ../machine/callback.h ../machine/timer.h /usr/include/c++/4.8/vector \
  /usr/include/c++/4.8/bits/stl_construct.h \
  /usr/include/c++/4.8/ext/alloc_traits.h \
  /usr/include/c++/4.8/bits/stl_uninitialized.h \
@@ -1258,8 +1260,8 @@ synchlist.o: ../threads/synchlist.cc /usr/include/stdc-predef.h \
  ../lib/list.cc ../threads/synch.h ../threads/thread.h ../lib/utility.h \
  ../lib/sysdep.h ../threads/main.h ../lib/debug.h ../threads/kernel.h \
  ../threads/scheduler.h ../machine/interrupt.h ../machine/callback.h \
- ../machine/stats.h ../threads/alarm.h ../machine/callback.h \
- ../machine/timer.h /usr/include/c++/4.8/vector \
+ ../threads/scheduler.h ../machine/stats.h ../threads/alarm.h \
+ ../machine/callback.h ../machine/timer.h /usr/include/c++/4.8/vector \
  /usr/include/c++/4.8/bits/stl_construct.h \
  /usr/include/c++/4.8/ext/alloc_traits.h \
  /usr/include/c++/4.8/bits/stl_uninitialized.h \
@@ -1356,9 +1358,10 @@ thread.o: ../threads/thread.cc /usr/include/stdc-predef.h \
  ../threads/switch.h ../threads/synch.h ../lib/list.h ../lib/debug.h \
  ../lib/utility.h ../lib/sysdep.h ../lib/list.cc ../threads/main.h \
  ../lib/debug.h ../threads/kernel.h ../threads/scheduler.h \
- ../machine/interrupt.h ../machine/callback.h ../machine/stats.h \
- ../threads/alarm.h ../machine/callback.h ../machine/timer.h \
- /usr/include/c++/4.8/vector /usr/include/c++/4.8/bits/stl_construct.h \
+ ../machine/interrupt.h ../machine/callback.h ../threads/scheduler.h \
+ ../machine/stats.h ../threads/alarm.h ../machine/callback.h \
+ ../machine/timer.h /usr/include/c++/4.8/vector \
+ /usr/include/c++/4.8/bits/stl_construct.h \
  /usr/include/c++/4.8/ext/alloc_traits.h \
  /usr/include/c++/4.8/bits/stl_uninitialized.h \
  /usr/include/c++/4.8/bits/stl_vector.h \
@@ -1455,9 +1458,10 @@ elevatortest.o: ../machine/elevatortest.cc /usr/include/stdc-predef.h \
  /usr/include/i386-linux-gnu/bits/sys_errlist.h /usr/include/string.h \
  ../lib/list.cc ../threads/synch.h ../threads/thread.h ../lib/sysdep.h \
  ../threads/main.h ../lib/debug.h ../threads/kernel.h \
- ../threads/scheduler.h ../machine/interrupt.h ../machine/stats.h \
- ../threads/alarm.h ../machine/callback.h ../machine/timer.h \
- /usr/include/c++/4.8/vector /usr/include/c++/4.8/bits/stl_construct.h \
+ ../threads/scheduler.h ../machine/interrupt.h ../threads/scheduler.h \
+ ../machine/stats.h ../threads/alarm.h ../machine/callback.h \
+ ../machine/timer.h /usr/include/c++/4.8/vector \
+ /usr/include/c++/4.8/bits/stl_construct.h \
  /usr/include/c++/4.8/ext/alloc_traits.h \
  /usr/include/c++/4.8/bits/stl_uninitialized.h \
  /usr/include/c++/4.8/bits/stl_vector.h \
@@ -1553,8 +1557,8 @@ elevator.o: ../machine/elevator.cc /usr/include/stdc-predef.h \
  /usr/include/i386-linux-gnu/bits/sys_errlist.h /usr/include/string.h \
  ../lib/list.cc ../threads/kernel.h ../lib/debug.h ../threads/thread.h \
  ../lib/sysdep.h ../threads/scheduler.h ../machine/interrupt.h \
- ../machine/stats.h ../threads/alarm.h ../machine/callback.h \
- ../machine/timer.h /usr/include/c++/4.8/vector \
+ ../threads/scheduler.h ../machine/stats.h ../threads/alarm.h \
+ ../machine/callback.h ../machine/timer.h /usr/include/c++/4.8/vector \
  /usr/include/c++/4.8/bits/stl_construct.h \
  /usr/include/c++/4.8/ext/alloc_traits.h \
  /usr/include/c++/4.8/bits/stl_uninitialized.h \

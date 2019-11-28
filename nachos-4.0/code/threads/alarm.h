@@ -33,6 +33,7 @@ class Alarm : public CallBackObj {
     ~Alarm() { delete timer; }
     
     void WaitUntil(int x);	// suspend execution until time > now + x
+    int getTime() {return current; }
 
   private:
     typedef std::pair<Thread*, int> thread_clk;

@@ -100,12 +100,20 @@ class Thread {
 				// relinquish the processor
     void Begin();		// Startup code for the thread	
     void Finish();  		// The thread is done executing
+
+    void setBurstTime(int t)	{burstTime = t;}
+    int getBurstTime()		{return burstTime;}
+    void setStartTime(int t)	{startTime = t;}
+    int getStartTime()		{return startTime;}
+    void setPriority(int t)	{execPriority = t;}
+    int getPriority()		{return execPriority;}
     
     void CheckOverflow();   	// Check if thread stack has overflowed
     void setStatus(ThreadStatus st) { status = st; }
     char* getName() { return (name); }
     void Print() { cout << name; }
     void SelfTest();		// test whether thread impl is working
+    static void SchedulingTest();
 
   private:
     // some of the private data for this class is listed above
@@ -115,6 +123,10 @@ class Thread {
 				// (If NULL, don't deallocate stack)
     ThreadStatus status;	// ready, running or blocked
     char* name;
+
+    int burstTime;	// predicted burst time
+    int startTime;	// the start time of the thread
+    int execPriority;	// the execute priority of the thread
 
     void StackAllocate(VoidFunctionPtr func, void *arg);
     				// Allocate a stack for thread.

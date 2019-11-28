@@ -49,6 +49,8 @@ void Alarm::WaitUntil(int val){
     IntStatus oldLevel = kernel->interrupt->SetLevel(IntOff);
     Thread* t = kernel->currentThread;
     cout << "Thread "<<t->getName() << " waits until " << val << "(ms)" << endl;
+
+    t->setBurstTime(kernel->stats->userTicks - t->getStartTime());
     sleeping_threads.push_back(thread_clk(t, current + val));
     t->Sleep(false);
     kernel->interrupt->SetLevel(oldLevel);
@@ -72,13 +74,16 @@ void Alarm::CallBack() {
         } else ++i;
     }
 
+    kernel->currentThread->setPriority(kernel->currentThread->getPriority() - 1);
     
     if (status == IdleMode && !woken && sleeping_threads.empty()) {	// is it time to quit?
         if (!interrupt->AnyFutureInterrupts()) {
 	        timer->Disable();	// turn off the timer
 	    }
-    } else {			// there's someone to preempt
+    } else if(kernel->scheduler->Yield()){
+        cout << "=== interrupt->YieldOnReturn ===" << endl;			// there's someone to preempt
 	    interrupt->YieldOnReturn();
+        // kernel->scheduler->setTime(current);
     }
 }
 

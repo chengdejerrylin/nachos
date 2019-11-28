@@ -63,6 +63,18 @@ UserProgKernel::Initialize()
 #endif // FILESYS
 }
 
+void
+UserProgKernel::Initialize(SchedulerType type)
+{
+    ThreadedKernel::Initialize(type);	// init multithreading
+
+    machine = new Machine(debugUserProg);
+    fileSystem = new FileSystem();
+#ifdef FILESYS
+    synchDisk = new SynchDisk("New SynchDisk");
+#endif // FILESYS
+}
+
 //----------------------------------------------------------------------
 // UserProgKernel::~UserProgKernel
 // 	Nachos is halting.  De-allocate global data structures.
