@@ -11,6 +11,7 @@
 #include "copyright.h"
 #include "alarm.h"
 #include "main.h"
+#include "debug.h"
 
 //----------------------------------------------------------------------
 // Alarm::Alarm
@@ -48,9 +49,8 @@ Alarm::Alarm(bool doRandom) :  current(0) {
 void Alarm::WaitUntil(int val){
     IntStatus oldLevel = kernel->interrupt->SetLevel(IntOff);
     Thread* t = kernel->currentThread;
-    cout << "Thread "<<t->getName() << " waits until " << val << "(ms)" << endl;
+    DEBUG(dbgThread, "Thread " << t->getName() << " waits until " << val << "(ms)");
 
-    t->setBurstTime(kernel->stats->userTicks - t->getStartTime());
     sleeping_threads.push_back(thread_clk(t, current + val));
     t->Sleep(false);
     kernel->interrupt->SetLevel(oldLevel);
@@ -68,22 +68,20 @@ void Alarm::CallBack() {
 
         if(it.second < current){
             woken = true;
-            cout << "Thread "<<kernel->currentThread->getName() << " is Called back" << endl;
+            DEBUG(dbgThread, "Thread "<<kernel->currentThread->getName() << " is Called back");
             kernel->scheduler->ReadyToRun(it.first);
             sleeping_threads.erase(sleeping_threads.begin() + i);
         } else ++i;
     }
-
-    kernel->currentThread->setPriority(kernel->currentThread->getPriority() - 1);
     
     if (status == IdleMode && !woken && sleeping_threads.empty()) {	// is it time to quit?
         if (!interrupt->AnyFutureInterrupts()) {
 	        timer->Disable();	// turn off the timer
 	    }
-    } else if(kernel->scheduler->Yield()){
-        cout << "=== interrupt->YieldOnReturn ===" << endl;			// there's someone to preempt
-	    interrupt->YieldOnReturn();
-        // kernel->scheduler->setTime(current);
+    } else {
+        // cout << "=== interrupt->YieldOnReturn ===" << endl;			// there's someone to preempt
+	    //interrupt->YieldOnReturn();
+        ;
     }
 }
 

@@ -1,0 +1,86 @@
+Using Testcase: 2
+Using scheduler: SJF
+C: remaining 4
+C: remaining 3
+C: remaining 2
+C: remaining 1
+C: remaining 0
+B: remaining 9
+B: remaining 8
+B: remaining 7
+B: remaining 6
+B: remaining 5
+B: remaining 4
+B: remaining 3
+B: remaining 2
+B: remaining 1
+B: remaining 0
+D: remaining 9
+D: remaining 8
+D: remaining 7
+D: remaining 6
+D: remaining 5
+D: remaining 4
+D: remaining 3
+D: remaining 2
+D: remaining 1
+D: remaining 0
+A: remaining 49
+A: remaining 48
+A: remaining 47
+A: remaining 46
+A: remaining 45
+A: remaining 44
+A: remaining 43
+A: remaining 42
+A: remaining 41
+A: remaining 40
+A: remaining 39
+A: remaining 38
+A: remaining 37
+A: remaining 36
+A: remaining 35
+A: remaining 34
+A: remaining 33
+A: remaining 32
+A: remaining 31
+A: remaining 30
+A: remaining 29
+A: remaining 28
+A: remaining 27
+A: remaining 26
+A: remaining 25
+A: remaining 24
+A: remaining 23
+A: remaining 22
+A: remaining 21
+A: remaining 20
+A: remaining 19
+A: remaining 18
+A: remaining 17
+A: remaining 16
+A: remaining 15
+A: remaining 14
+A: remaining 13
+A: remaining 12
+A: remaining 11
+A: remaining 10
+A: remaining 9
+A: remaining 8
+A: remaining 7
+A: remaining 6
+A: remaining 5
+A: remaining 4
+A: remaining 3
+A: remaining 2
+A: remaining 1
+A: remaining 0
+No threads ready or runnable, and no pending interrupts.
+Assuming the program completed.
+Machine halting!
+
+Ticks: total 3000, idle 50, system 2950, user 0
+Disk I/O: reads 0, writes 0
+Console I/O: reads 0, writes 0
+Paging: faults 0
+Network I/O: packets received 0, sent 0

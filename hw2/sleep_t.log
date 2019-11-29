@@ -1,0 +1,206 @@
+Entering main
+Total threads number is 2
+Forking thread: test/sleep f(a): 134587957 0x958c440
+Putting thread on ready list: test/sleep
+Thread test/sleep is executing.
+Forking thread: test/sleep1 f(a): 134587957 0x9590658
+Putting thread on ready list: test/sleep1
+Thread test/sleep1 is executing.
+Finishing thread: main
+Sleeping thread: main
+Switching from: main to: test/sleep
+Beginning thread: test/sleep
+Deleting thread: main
+Thread test/sleep waits until 1000000(ms)
+Sleeping thread: test/sleep
+Switching from: test/sleep to: test/sleep1
+Beginning thread: test/sleep1
+Thread test/sleep1 waits until 100000(ms)
+Sleeping thread: test/sleep1
+Thread test/sleep1 is Called back
+Putting thread on ready list: test/sleep1
+Switching from: test/sleep1 to: test/sleep1
+Now in thread: test/sleep1
+Print integer:1
+Thread test/sleep1 waits until 100000(ms)
+Sleeping thread: test/sleep1
+Thread test/sleep1 is Called back
+Putting thread on ready list: test/sleep1
+Switching from: test/sleep1 to: test/sleep1
+Now in thread: test/sleep1
+Print integer:1
+Thread test/sleep1 waits until 100000(ms)
+Sleeping thread: test/sleep1
+Thread test/sleep1 is Called back
+Putting thread on ready list: test/sleep1
+Switching from: test/sleep1 to: test/sleep1
+Now in thread: test/sleep1
+Print integer:1
+Thread test/sleep1 waits until 100000(ms)
+Sleeping thread: test/sleep1
+Thread test/sleep1 is Called back
+Putting thread on ready list: test/sleep1
+Switching from: test/sleep1 to: test/sleep1
+Now in thread: test/sleep1
+Print integer:1
+Thread test/sleep1 waits until 100000(ms)
+Sleeping thread: test/sleep1
+Thread test/sleep1 is Called back
+Putting thread on ready list: test/sleep1
+Switching from: test/sleep1 to: test/sleep1
+Now in thread: test/sleep1
+Print integer:1
+Thread test/sleep1 waits until 100000(ms)
+Sleeping thread: test/sleep1
+Thread test/sleep1 is Called back
+Putting thread on ready list: test/sleep1
+Switching from: test/sleep1 to: test/sleep1
+Now in thread: test/sleep1
+Print integer:1
+Thread test/sleep1 waits until 100000(ms)
+Sleeping thread: test/sleep1
+Thread test/sleep1 is Called back
+Putting thread on ready list: test/sleep1
+Switching from: test/sleep1 to: test/sleep1
+Now in thread: test/sleep1
+Print integer:1
+Thread test/sleep1 waits until 100000(ms)
+Sleeping thread: test/sleep1
+Thread test/sleep1 is Called back
+Putting thread on ready list: test/sleep1
+Switching from: test/sleep1 to: test/sleep1
+Now in thread: test/sleep1
+Print integer:1
+Thread test/sleep1 waits until 100000(ms)
+Sleeping thread: test/sleep1
+Thread test/sleep1 is Called back
+Putting thread on ready list: test/sleep1
+Switching from: test/sleep1 to: test/sleep1
+Now in thread: test/sleep1
+Print integer:1
+Thread test/sleep1 waits until 100000(ms)
+Sleeping thread: test/sleep1
+Thread test/sleep1 is Called back
+Putting thread on ready list: test/sleep
+Switching from: test/sleep1 to: test/sleep
+Now in thread: test/sleep
+Print integer:10
+Thread test/sleep waits until 1000000(ms)
+Sleeping thread: test/sleep
+Thread test/sleep is Called back
+Putting thread on ready list: test/sleep1
+Switching from: test/sleep to: test/sleep1
+Now in thread: test/sleep1
+Print integer:1
+Thread test/sleep1 waits until 100000(ms)
+Sleeping thread: test/sleep1
+Thread test/sleep1 is Called back
+Putting thread on ready list: test/sleep1
+Switching from: test/sleep1 to: test/sleep1
+Now in thread: test/sleep1
+Print integer:1
+Thread test/sleep1 waits until 100000(ms)
+Sleeping thread: test/sleep1
+Thread test/sleep1 is Called back
+Putting thread on ready list: test/sleep1
+Switching from: test/sleep1 to: test/sleep1
+Now in thread: test/sleep1
+Print integer:1
+Thread test/sleep1 waits until 100000(ms)
+Sleeping thread: test/sleep1
+Thread test/sleep1 is Called back
+Putting thread on ready list: test/sleep1
+Switching from: test/sleep1 to: test/sleep1
+Now in thread: test/sleep1
+Print integer:1
+Thread test/sleep1 waits until 100000(ms)
+Sleeping thread: test/sleep1
+Thread test/sleep1 is Called back
+Putting thread on ready list: test/sleep1
+Switching from: test/sleep1 to: test/sleep1
+Now in thread: test/sleep1
+Print integer:1
+Thread test/sleep1 waits until 100000(ms)
+Sleeping thread: test/sleep1
+Thread test/sleep1 is Called back
+Putting thread on ready list: test/sleep1
+Switching from: test/sleep1 to: test/sleep1
+Now in thread: test/sleep1
+Print integer:1
+Thread test/sleep1 waits until 100000(ms)
+Sleeping thread: test/sleep1
+Thread test/sleep1 is Called back
+Putting thread on ready list: test/sleep1
+Switching from: test/sleep1 to: test/sleep1
+Now in thread: test/sleep1
+Print integer:1
+Thread test/sleep1 waits until 100000(ms)
+Sleeping thread: test/sleep1
+Thread test/sleep1 is Called back
+Putting thread on ready list: test/sleep1
+Switching from: test/sleep1 to: test/sleep1
+Now in thread: test/sleep1
+Print integer:1
+Thread test/sleep1 waits until 100000(ms)
+Sleeping thread: test/sleep1
+Thread test/sleep1 is Called back
+Putting thread on ready list: test/sleep1
+Switching from: test/sleep1 to: test/sleep1
+Now in thread: test/sleep1
+Print integer:1
+Thread test/sleep1 waits until 100000(ms)
+Sleeping thread: test/sleep1
+Thread test/sleep1 is Called back
+Putting thread on ready list: test/sleep1
+Switching from: test/sleep1 to: test/sleep1
+Now in thread: test/sleep1
+Print integer:1
+Thread test/sleep1 waits until 100000(ms)
+Sleeping thread: test/sleep1
+Thread test/sleep1 is Called back
+Putting thread on ready list: test/sleep
+Switching from: test/sleep1 to: test/sleep
+Now in thread: test/sleep
+Print integer:10
+Thread test/sleep waits until 1000000(ms)
+Sleeping thread: test/sleep
+Thread test/sleep is Called back
+Putting thread on ready list: test/sleep1
+Switching from: test/sleep to: test/sleep1
+Now in thread: test/sleep1
+Print integer:1
+return value:0
+Finishing thread: test/sleep1
+Sleeping thread: test/sleep1
+Thread test/sleep1 is Called back
+Putting thread on ready list: test/sleep
+Switching from: test/sleep1 to: test/sleep
+Now in thread: test/sleep
+Deleting thread: test/sleep1
+Print integer:10
+Thread test/sleep waits until 1000000(ms)
+Sleeping thread: test/sleep
+Thread test/sleep is Called back
+Putting thread on ready list: test/sleep
+Switching from: test/sleep to: test/sleep
+Now in thread: test/sleep
+Print integer:10
+Thread test/sleep waits until 1000000(ms)
+Sleeping thread: test/sleep
+Thread test/sleep is Called back
+Putting thread on ready list: test/sleep
+Switching from: test/sleep to: test/sleep
+Now in thread: test/sleep
+Print integer:10
+return value:0
+Finishing thread: test/sleep
+Sleeping thread: test/sleep
+No threads ready or runnable, and no pending interrupts.
+Assuming the program completed.
+Machine halting!
+
+Ticks: total 500000600, idle 499999671, system 300, user 629
+Disk I/O: reads 0, writes 0
+Console I/O: reads 0, writes 0
+Paging: faults 0
+Network I/O: packets received 0, sent 0

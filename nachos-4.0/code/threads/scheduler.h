@@ -18,7 +18,7 @@
 // thread is running, and which threads are ready but not running.
 
 enum SchedulerType {
-        RR,     // Round Robin
+        FCFS,     // Round Robin
         SJF,
         Priority
 };
@@ -37,9 +37,7 @@ class Scheduler {
 	void CheckToBeDestroyed();	// Check if thread that had been
     					// running needs to be deleted
 	void Print();			// Print contents of ready list
-	bool Yield();
-	void setTime(int t) {time = t;}
-	int getTime() {return time;}
+	void SelfTest(int);
     
     // SelfTest for scheduler is implemented in class Thread
     
@@ -49,7 +47,6 @@ class Scheduler {
 					// but not running
 	Thread *toBeDestroyed;		// finishing thread to be destroyed
     					// by the next thread that runs
-	int time;
 };
 
 #endif // SCHEDULER_H

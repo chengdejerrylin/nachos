@@ -47,7 +47,7 @@ int PriorityCompare(Thread *a, Thread *b) {
 Scheduler::Scheduler(SchedulerType type) : schedulerType(type)
 {
 	switch(schedulerType) {
-    case RR:
+    case FCFS:
         readyList = new List<Thread *>;
         break;
     case SJF:
@@ -151,7 +151,6 @@ Scheduler::Run (Thread *nextThread, bool finishing)
 
     kernel->currentThread = nextThread;  // switch to the next thread
     nextThread->setStatus(RUNNING);      // nextThread is now running
-    time = kernel->stats->userTicks;
     
     DEBUG(dbgThread, "Switching from: " << oldThread->getName() << " to: " << nextThread->getName());
     
@@ -210,11 +209,91 @@ Scheduler::Print()
     readyList->Apply(ThreadPrint);
 }
 
-bool Scheduler::Yield(){
+void
+threadBody() {
+    Thread *thread = kernel->currentThread;
+    while (thread->getBurstTime() > 0) {
+        thread->setBurstTime(thread->getBurstTime() - 1);
+        kernel->interrupt->OneTick();
+        printf("%s: remaining %d\n", kernel->currentThread->getName(), kernel->currentThread->getBurstTime());
+    }
+}
 
-    return schedulerType == RR ;
+void Scheduler::SelfTest(int testcase) {
+    cout << "Using Testcase: " << testcase << endl;
+    cout << "Using scheduler: ";
+    switch (schedulerType) {
+    case FCFS:
+        cout << "FCFS";
+        break;
+
+    case SJF:
+        cout << "SJF";
+        break;
+
+    case Priority:
+        cout << "Priority";
+        break;
+    }
+    cout << endl;
     
-    if(schedulerType != RR)return false;
-    return kernel->stats->userTicks - time > QUANTUM;
+    const int thread_num = 4;
+    char *name[thread_num] = {"A", "B", "C", "D"};
+    int thread_priority[thread_num];
+    int thread_burst[thread_num];
 
+    switch(testcase){
+        case 0:
+            thread_priority[0] = 5;
+            thread_priority[1] = 1;
+            thread_priority[2] = 3;
+            thread_priority[3] = 2;
+
+            thread_burst[0] = 3;
+            thread_burst[1] = 9;
+            thread_burst[2] = 7;
+            thread_burst[3] = 3;
+
+            break;
+
+        case 1:
+            thread_priority[0] = 5;
+            thread_priority[1] = 1;
+            thread_priority[2] = 3;
+            thread_priority[3] = 2;
+
+            thread_burst[0] = 1;
+            thread_burst[1] = 9;
+            thread_burst[2] = 2;
+            thread_burst[3] = 3;
+
+            break;
+
+        case 2:
+            thread_priority[0] = 10;
+            thread_priority[1] = 1;
+            thread_priority[2] = 2;
+            thread_priority[3] = 3;
+
+            thread_burst[0] = 50;
+            thread_burst[1] = 10;
+            thread_burst[2] = 5;
+            thread_burst[3] = 10;
+
+            break;
+
+        default :
+            cerr << "No such testcase : " << testcase << endl;
+            ASSERTNOTREACHED();
+            
+    }
+    
+    Thread *t;
+    for (int i = 0; i < thread_num; i ++) {
+        t = new Thread(name[i]);
+        t->setPriority(thread_priority[i]);
+        t->setBurstTime(thread_burst[i]);
+        t->Fork((VoidFunctionPtr) threadBody, (void *)NULL);
+    }
+    kernel->currentThread->Yield();
 }
