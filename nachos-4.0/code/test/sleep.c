@@ -2,8 +2,8 @@
 main() {
     int i;
     for(i = 0; i < 5; i++) {
-        Sleep(1000);
-        PrintInt(i);
+        Sleep(1000000);
+        PrintInt(10);
     }
     return 0;
 }

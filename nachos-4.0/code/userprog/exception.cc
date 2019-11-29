@@ -82,7 +82,7 @@ ExceptionHandler(ExceptionType which)
 
 		case SC_Sleep:
 			val=kernel->machine->ReadRegister(4);
-			cout << "Sleep Time:" << val << "(ms)."<< endl;
+			// cout << "Sleep Time:" << val << "(ms)."<< endl;
 			kernel->alarm->WaitUntil(val);
 			return;
 

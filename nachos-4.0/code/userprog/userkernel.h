@@ -24,10 +24,11 @@ class UserProgKernel : public ThreadedKernel {
     ~UserProgKernel();		// deallocate the kernel
 
     void Initialize();		// initialize the kernel 
+    void Initialize(SchedulerType type);		// initialize the kernel 
 
     void Run();			// do kernel stuff 
 
-    void SelfTest();		// test whether kernel is working
+    void SelfTest(int);		// test whether kernel is working
 
 // These are public for notational convenience.
     Machine *machine;

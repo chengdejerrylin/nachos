@@ -436,4 +436,3 @@ Thread::SelfTest()
     t->Fork((VoidFunctionPtr) SimpleThread, (void *) 1);
     SimpleThread(0);
 }
-

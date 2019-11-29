@@ -57,6 +57,8 @@ main(int argc, char **argv)
 {
     int i;
     char *debugArg = "";
+    SchedulerType type = FCFS;
+    int testcase = 0;
 
     // before anything else, initialize the debugging system
     for (i = 1; i < argc; i++) {
@@ -64,7 +66,18 @@ main(int argc, char **argv)
 	    ASSERT(i + 1 < argc);   // next argument is debug string
             debugArg = argv[i + 1];
 	    i++;
-	} else if (strcmp(argv[i], "-u") == 0) {
+	} else if (strcmp(argv[i], "-s") == 0) {
+        ASSERT(i + 1 < argc);   // next argument is debug string
+	    ++i;
+        if(strcmp(argv[i], "SJF") == 0)type = SJF;
+        else if(strcmp(argv[i], "FCFS") == 0)type = FCFS;
+        else if(strcmp(argv[i], "PRI") == 0)type = Priority;
+        else ASSERT(false);
+    } else if (strcmp(argv[i], "-t") == 0) {
+        ASSERT(i + 1 < argc);   // next argument is debug string
+	    ++i;
+        testcase = atoi(argv[i]);
+    } else if (strcmp(argv[i], "-u") == 0) {
             cout << "Partial usage: nachos [-z -d debugFlags]\n";
 	} else if (strcmp(argv[i], "-z") == 0) {
             cout << copyright;
@@ -76,11 +89,11 @@ main(int argc, char **argv)
     DEBUG(dbgThread, "Entering main");
 
     kernel = new KernelType(argc, argv);
-    kernel->Initialize();
+    kernel->Initialize(type);
     
     CallOnUserAbort(Cleanup);		// if user hits ctl-C
 
-    kernel->SelfTest();
+    kernel->SelfTest(testcase);
     kernel->Run();
     
     return 0;

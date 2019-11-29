@@ -23,13 +23,14 @@ class ThreadedKernel {
     				// Interpret command line arguments
     ~ThreadedKernel();		// deallocate the kernel
     
-    void Initialize(); 		// initialize the kernel -- separated
+    void Initialize(SchedulerType type); 		// initialize the kernel -- separated
 				// from constructor because 
 				// refers to "kernel" as a global
+    void Initialize(){Initialize(FCFS); }
 
     void Run();			// do kernel stuff
-				    
-    void SelfTest();		// test whether kernel is working
+	    
+    void SelfTest(int);		// test whether kernel is working
     
 // These are public for notational convenience; really, 
 // they're global variables used everywhere.  Putting them into 

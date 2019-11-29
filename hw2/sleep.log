@@ -1,0 +1,39 @@
+Total threads number is 2
+Thread test/sleep is executing.
+Thread test/sleep1 is executing.
+Print integer:1
+Print integer:1
+Print integer:1
+Print integer:1
+Print integer:1
+Print integer:1
+Print integer:1
+Print integer:1
+Print integer:1
+Print integer:10
+Print integer:1
+Print integer:1
+Print integer:1
+Print integer:1
+Print integer:1
+Print integer:1
+Print integer:1
+Print integer:1
+Print integer:1
+Print integer:1
+Print integer:10
+Print integer:1
+return value:0
+Print integer:10
+Print integer:10
+Print integer:10
+return value:0
+No threads ready or runnable, and no pending interrupts.
+Assuming the program completed.
+Machine halting!
+
+Ticks: total 500000600, idle 499999671, system 300, user 629
+Disk I/O: reads 0, writes 0
+Console I/O: reads 0, writes 0
+Paging: faults 0
+Network I/O: packets received 0, sent 0

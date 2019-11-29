@@ -11,6 +11,7 @@
 #include "copyright.h"
 #include "alarm.h"
 #include "main.h"
+#include "debug.h"
 
 //----------------------------------------------------------------------
 // Alarm::Alarm
@@ -20,7 +21,7 @@
 //		occur at random, instead of fixed, intervals.
 //----------------------------------------------------------------------
 
-Alarm::Alarm(bool doRandom) :  current(0) {
+Alarm::Alarm(bool doRandom) {
     timer = new Timer(doRandom, this);
 }
 
@@ -47,9 +48,7 @@ Alarm::Alarm(bool doRandom) :  current(0) {
 
 void Alarm::WaitUntil(int val){
     IntStatus oldLevel = kernel->interrupt->SetLevel(IntOff);
-    cout << "Thread "<<kernel->currentThread->getName() << " waits until " << val << "(ms)" << endl;
-    sleeping_threads.Append(thread_clk(kernel->currentThread, current + val));
-    kernel->currentThread->Sleep(false);
+    kernel->scheduler->FallAsleep(kernel->currentThread, val);
     kernel->interrupt->SetLevel(oldLevel);
 }
 
@@ -57,26 +56,14 @@ void Alarm::CallBack() {
     Interrupt *interrupt = kernel->interrupt;
     MachineStatus status = interrupt->getStatus();
 
-    ++current;
-    bool woken = false;
-
-    for(ListIterator<thread_clk> it(&sleeping_threads); !it.IsDone(); it.Next()){
-        if(it.Item().second < current){
-            woken = true;
-            cout << "Thread "<<kernel->currentThread->getName() << " is Called back" << endl;
-            kernel->scheduler->ReadyToRun(it.Item().first);
-            sleeping_threads.Remove(it.Item());
-
-            break;
-        }
-    }
-
+    bool woken = kernel->scheduler->WakeUp();
     
-    if (status == IdleMode && ~woken && sleeping_threads.IsEmpty()) {	// is it time to quit?
+    if (status == IdleMode && !woken && !kernel->scheduler->hasSleeping() ) {	// is it time to quit?
         if (!interrupt->AnyFutureInterrupts()) {
 	        timer->Disable();	// turn off the timer
 	    }
-    } else {			// there's someone to preempt
+    } else if (kernel->scheduler->needYield()){
+        // cout << "=== interrupt->YieldOnReturn ===" << endl;			// there's someone to preempt
 	    interrupt->YieldOnReturn();
     }
 }

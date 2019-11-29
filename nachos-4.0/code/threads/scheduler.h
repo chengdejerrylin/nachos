@@ -12,20 +12,22 @@
 #include "copyright.h"
 #include "list.h"
 #include "thread.h"
+#include <vector>
+#include <utility>
 
 // The following class defines the scheduler/dispatcher abstraction -- 
 // the data structures and operations needed to keep track of which 
 // thread is running, and which threads are ready but not running.
 
 enum SchedulerType {
-        RR,     // Round Robin
+        FCFS,     // Round Robin
         SJF,
         Priority
 };
 
 class Scheduler {
   public:
-	Scheduler();		// Initialize list of ready threads 
+	Scheduler(SchedulerType);		// Initialize list of ready threads 
 	~Scheduler();				// De-allocate ready list
 
 	void ReadyToRun(Thread* thread);	
@@ -37,13 +39,23 @@ class Scheduler {
 	void CheckToBeDestroyed();	// Check if thread that had been
     					// running needs to be deleted
 	void Print();			// Print contents of ready list
+	void FallAsleep(Thread*, int);
+	bool WakeUp();
+	bool hasSleeping() { return !sleepingList.empty(); }
+	bool needYield();
+
+	void SelfTest(int);
     
     // SelfTest for scheduler is implemented in class Thread
     
   private:
+  	typedef std::pair<Thread*, int> thread_clk;
+	int current;
 	SchedulerType schedulerType;
+
 	List<Thread *> *readyList;	// queue of threads that are ready to run,
 					// but not running
+	std::vector<thread_clk> sleepingList;
 	Thread *toBeDestroyed;		// finishing thread to be destroyed
     					// by the next thread that runs
 };

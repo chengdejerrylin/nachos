@@ -53,6 +53,7 @@ class List {
     				// Return first item on list
 				// without removing it
     T RemoveFront(); 		// Take item off the front of the list
+    T GetFront();
     void Remove(T item); 	// Remove specific item from list
 
     bool IsInList(T item) const;// is the item in the list?
