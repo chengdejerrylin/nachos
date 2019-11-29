@@ -21,7 +21,7 @@
 //		occur at random, instead of fixed, intervals.
 //----------------------------------------------------------------------
 
-Alarm::Alarm(bool doRandom) :  current(0) {
+Alarm::Alarm(bool doRandom) {
     timer = new Timer(doRandom, this);
 }
 
@@ -48,11 +48,7 @@ Alarm::Alarm(bool doRandom) :  current(0) {
 
 void Alarm::WaitUntil(int val){
     IntStatus oldLevel = kernel->interrupt->SetLevel(IntOff);
-    Thread* t = kernel->currentThread;
-    DEBUG(dbgThread, "Thread " << t->getName() << " waits until " << val << "(ms)");
-
-    sleeping_threads.push_back(thread_clk(t, current + val));
-    t->Sleep(false);
+    kernel->scheduler->FallAsleep(kernel->currentThread, val);
     kernel->interrupt->SetLevel(oldLevel);
 }
 
@@ -60,28 +56,15 @@ void Alarm::CallBack() {
     Interrupt *interrupt = kernel->interrupt;
     MachineStatus status = interrupt->getStatus();
 
-    ++current;
-    bool woken = false;
-
-    for(unsigned i = 0; i < sleeping_threads.size(); ){
-        thread_clk it = sleeping_threads[i];
-
-        if(it.second < current){
-            woken = true;
-            DEBUG(dbgThread, "Thread "<<kernel->currentThread->getName() << " is Called back");
-            kernel->scheduler->ReadyToRun(it.first);
-            sleeping_threads.erase(sleeping_threads.begin() + i);
-        } else ++i;
-    }
+    bool woken = kernel->scheduler->WakeUp();
     
-    if (status == IdleMode && !woken && sleeping_threads.empty()) {	// is it time to quit?
+    if (status == IdleMode && !woken && !kernel->scheduler->hasSleeping() ) {	// is it time to quit?
         if (!interrupt->AnyFutureInterrupts()) {
 	        timer->Disable();	// turn off the timer
 	    }
-    } else {
+    } else if (kernel->scheduler->needYield()){
         // cout << "=== interrupt->YieldOnReturn ===" << endl;			// there's someone to preempt
-	    //interrupt->YieldOnReturn();
-        ;
+	    interrupt->YieldOnReturn();
     }
 }
 

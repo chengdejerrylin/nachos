@@ -44,7 +44,7 @@ int PriorityCompare(Thread *a, Thread *b) {
 //	Initially, no ready threads.
 //----------------------------------------------------------------------
 
-Scheduler::Scheduler(SchedulerType type) : schedulerType(type)
+Scheduler::Scheduler(SchedulerType type) : schedulerType(type), current(0)
 {
 	switch(schedulerType) {
     case FCFS:
@@ -209,8 +209,43 @@ Scheduler::Print()
     readyList->Apply(ThreadPrint);
 }
 
-void
-threadBody() {
+void Scheduler::FallAsleep(Thread *t, int val){
+    DEBUG(dbgThread, "Thread " << t->getName() << " waits until " << val << "(ms)");
+
+    sleepingList.push_back(thread_clk(t, current + val));
+    t->Sleep(false);
+}
+
+bool Scheduler::WakeUp(){
+    ++current;
+    bool woken = false;
+
+    for(unsigned i = 0; i < sleepingList.size(); ){
+        thread_clk it = sleepingList[i];
+
+        if(it.second < current){
+            woken = true;
+            DEBUG(dbgThread, "Thread "<<kernel->currentThread->getName() << " is Called back");
+            ReadyToRun(it.first);
+            sleepingList.erase(sleepingList.begin() + i);
+        } else ++i;
+    }
+
+    return woken;
+}
+
+bool Scheduler:: needYield() {
+    Thread *now = kernel->currentThread;
+    Thread *next = readyList->GetFront();
+    if(!next) return false;
+    switch (schedulerType) {
+        case FCFS      : return false;
+        case SJF       : return SJFCompare(now, next) > 0;
+        case Priority  : return PriorityCompare(now, next) > 0;
+    }
+}
+
+void threadBody() {
     Thread *thread = kernel->currentThread;
     while (thread->getBurstTime() > 0) {
         thread->setBurstTime(thread->getBurstTime() - 1);

@@ -103,8 +103,6 @@ class Thread {
 
     void setBurstTime(int t)	{burstTime = t;}
     int getBurstTime()		{return burstTime;}
-    void setStartTime(int t)	{startTime = t;}
-    int getStartTime()		{return startTime;}
     void setPriority(int t)	{execPriority = t;}
     int getPriority()		{return execPriority;}
     
@@ -124,7 +122,6 @@ class Thread {
     char* name;
 
     int burstTime;	// predicted burst time
-    int startTime;	// the start time of the thread
     int execPriority;	// the execute priority of the thread
 
     void StackAllocate(VoidFunctionPtr func, void *arg);

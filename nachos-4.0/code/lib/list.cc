@@ -139,6 +139,11 @@ List<T>::RemoveFront()
     return thing;
 }
 
+template <class T>
+T List<T>::GetFront() {
+    if(IsEmpty() )return T();
+    return first->item;
+}
 //----------------------------------------------------------------------
 // List<T>::Remove
 //      Remove a specific item from the list.  Must be in the list!
