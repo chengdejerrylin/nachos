@@ -362,8 +362,7 @@ int MemoryManager::SavePage(){
     for(size_t i = 0; i < NumSectors; ++i){
 
         if(!swapTable[i].valid){
-            int paddr = frameTable[i].pageTable[frameTable[i].vpn].physicalPage * PageSize;
-            kernel->synchDisk->WriteSector(i, kernel->machine->mainMemory + paddr);
+            kernel->synchDisk->WriteSector(i, kernel->machine->mainMemory + page * PageSize);
             DEBUG(dbgAddr, "save    vpn" << frameTable[page].vpn  << ", ppn" << page << ",   to segment" << i << ",");
 
             swapTable[i].valid = true;
@@ -371,6 +370,7 @@ int MemoryManager::SavePage(){
             swapTable[i].pageTable =frameTable[page].pageTable;
             swapTable[i].vpn = frameTable[page].vpn;
 
+            ASSERT(frameTable[page].pageTable[frameTable[page].vpn].valid);
             frameTable[page].valid = false;
             frameTable[page].pageTable[frameTable[page].vpn].valid = false;
             return page;
@@ -404,6 +404,7 @@ bool MemoryManager::RestorePage(TranslationEntry *pageTable, int vpn, int ppn){
 
             swapTable[i].valid = false;
 
+            kernel->stats->numPageFaults++;
             return true;
         }
     }
