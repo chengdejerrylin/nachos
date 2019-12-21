@@ -41,34 +41,37 @@ class AddrSpace {
     void InitRegisters();		// Initialize user-level CPU registers,
 					// before jumping to user code
 
-    static unsigned UnusedPhyPage[32];
-    static bool IsInit;
-    static unsigned UnusedPhyPageStart, UnusedPhyPageEnd, RemainPhyPages;
-
 };
 
 class FrameInfoEntry {
+  public:
+    FrameInfoEntry();
+
     bool valid; //if being used
     bool lock;
-    AddrSpace *addrSpace; //which process is using this page
+    TranslationEntry *pageTable; //which process is using this page
     unsigned int vpn; //which virtual page of the process is stored in
                       //this page
+    unsigned count;
 };
 
 class MemoryManager {
   public:
+    MemoryManager();
+    ~MemoryManager();
 
-    void Initialize();
-
-    int TransAddr(AddrSpace *space, int virtAddr); // return phyAddr (translated from virtAddr)
-
-    bool AcquirePage(AddrSpace *space, int vpn); // ask a page (frame) for vpn
-
-    bool ReleasePage(AddrSpace *space, int vpn); // free a page
-
+    bool AcquirePage(TranslationEntry *pageTable, int vpn); // ask a page (frame) for vpn
+    void ReleaseAll(TranslationEntry *pageTable, int num);
     void PageFaultHandler();
     // will be called when manager want to swap a page from SwapTable 
     // to FrameTable and the FrameTable is full.
+
+  private :
+    FrameInfoEntry *frameTable;
+    FrameInfoEntry *swapTable;
+    unsigned count;
+
+    void SetNewPage(TranslationEntry *pageTable, int vpn, int ppn);
 
 };
 

@@ -131,10 +131,10 @@ class Machine {
 					// "read-only" to Nachos kernel code
 
     TranslationEntry *pageTable;
+	MemoryManager * memmgr;
     unsigned int pageTableSize;
     bool ReadMem(int addr, int size, int* value);
   private:
-	MemoryManager * memmgr;
 
 // Routines internal to the machine simulation -- DO NOT call these directly
     void DelayedLoad(int nextReg, int nextVal);  	

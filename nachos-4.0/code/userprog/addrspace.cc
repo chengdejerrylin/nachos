@@ -21,6 +21,7 @@
 #include "filesys.h"
 #include "machine.h"
 #include "noff.h"
+#include "disk.h"
 
 //----------------------------------------------------------------------
 // SwapHeader
@@ -44,12 +45,6 @@ SwapHeader (NoffHeader *noffH)
     noffH->uninitData.inFileAddr = WordToHost(noffH->uninitData.inFileAddr);
 }
 
-bool AddrSpace::IsInit = false;
-unsigned AddrSpace::UnusedPhyPage[NumPhysPages] = {0};
-unsigned AddrSpace::UnusedPhyPageStart = 0;
-unsigned AddrSpace::UnusedPhyPageEnd = 0;
-unsigned AddrSpace::RemainPhyPages = NumPhysPages;
-
 //----------------------------------------------------------------------
 // AddrSpace::AddrSpace
 // 	Create an address space to run a user program.
@@ -58,13 +53,7 @@ unsigned AddrSpace::RemainPhyPages = NumPhysPages;
 //	only uniprogramming, and we have a single unsegmented page table
 //----------------------------------------------------------------------
 
-AddrSpace::AddrSpace()
-{
-    if(!IsInit){
-        for(unsigned i = 0; i < NumPhysPages; ++i)AddrSpace::UnusedPhyPage[i] = i;
-        IsInit = true;
-    }
-    pageTable = 0;
+AddrSpace::AddrSpace(){
     // zero out the entire address space
 //    bzero(kernel->machine->mainMemory, MemorySize);
 }
@@ -77,12 +66,7 @@ AddrSpace::AddrSpace()
 AddrSpace::~AddrSpace()
 {
    if(pageTable){
-       for(unsigned i = 0; i < numPages; ++i){
-           UnusedPhyPage[UnusedPhyPageEnd] = pageTable[i].physicalPage;
-           UnusedPhyPageEnd = (UnusedPhyPageEnd == NumPhysPages-1) ? 0 : UnusedPhyPageEnd+1;
-       }
-       
-       RemainPhyPages += numPages;
+       kernel->machine->memmgr->ReleaseAll(pageTable, numPages);
        delete pageTable;
    }
 }
@@ -123,41 +107,66 @@ AddrSpace::Load(char *fileName)
 //	cout << "number of pages of " << fileName<< " is "<<numPages<<endl;
     size = numPages * PageSize;
 
-    ASSERT(numPages <= RemainPhyPages);		// check we're not trying
-						// to run anything too big --
-						// at least until we have
-						// virtual memory
-
-    RemainPhyPages -= numPages;
     pageTable = new TranslationEntry[numPages];
-    for(unsigned i = 0; i < numPages; ++i){
-        pageTable[i].virtualPage = i;
-        pageTable[i].physicalPage = UnusedPhyPage[UnusedPhyPageStart];
-        pageTable[i].valid = TRUE;
-        pageTable[i].use = FALSE;
-        pageTable[i].dirty = FALSE;
-        pageTable[i].readOnly = FALSE;
 
-        UnusedPhyPageStart = (UnusedPhyPageStart == NumPhysPages-1) ? 0 : UnusedPhyPageStart+1;
+    int codeVaddr    = noffH.code.virtualAddr;
+    int codeFileAddr = noffH.code.inFileAddr;
+    int codeSize     = 0;
+    int dataVaddr    = noffH.initData.virtualAddr;
+    int dataFileAddr = noffH.initData.inFileAddr;
+    int dataSize     = 0;
+
+    for(unsigned i = 0; i < numPages; ++i){
+        ASSERT(kernel->machine->memmgr->AcquirePage(pageTable, i) );
+
+        if(i == codeVaddr / PageSize && codeSize < noffH.code.size) {
+            DEBUG(dbgAddr, "Initializing code segment.");
+            int phyaddr = pageTable[i].physicalPage * PageSize + codeVaddr % PageSize;
+            int wrsize = PageSize - codeVaddr % PageSize;
+            if (codeSize + wrsize > noffH.code.size) wrsize = noffH.code.size - codeSize;
+
+            DEBUG(dbgAddr, codeVaddr << ", " << wrsize);
+            executable->ReadAt(&(kernel->machine->mainMemory[phyaddr]), wrsize, codeFileAddr);
+
+            codeVaddr    += wrsize;
+            codeFileAddr += wrsize;
+            codeSize     += wrsize;
+        }
+
+        if(i == dataVaddr / PageSize && dataSize < noffH.initData.size) {
+            DEBUG(dbgAddr, "Initializing data segment.");
+            int phyaddr = pageTable[i].physicalPage * PageSize + dataVaddr % PageSize;
+            int wrsize = PageSize - dataVaddr % PageSize;
+            if (dataSize + wrsize > noffH.initData.size) wrsize = noffH.initData.size - dataSize;
+
+            DEBUG(dbgAddr, dataVaddr << ", " << wrsize);
+            executable->ReadAt(&(kernel->machine->mainMemory[phyaddr]), wrsize, dataFileAddr);
+
+            dataVaddr    += wrsize;
+            dataFileAddr += wrsize;
+            dataSize     += wrsize;
+        }
+
     }
+    
 
     DEBUG(dbgAddr, "Initializing address space: " << numPages << ", " << size);
 
 // then, copy in the code and data segments into memory
-	if (noffH.code.size > 0) {
-        DEBUG(dbgAddr, "Initializing code segment.");
-	DEBUG(dbgAddr, noffH.code.virtualAddr << ", " << noffH.code.size);
-        	executable->ReadAt(
-		&(kernel->machine->mainMemory[pageTable[noffH.code.virtualAddr/PageSize].physicalPage * PageSize + noffH.code.virtualAddr % PageSize]), 
-			noffH.code.size, noffH.code.inFileAddr);
-    }
-	if (noffH.initData.size > 0) {
-        DEBUG(dbgAddr, "Initializing data segment.");
-	DEBUG(dbgAddr, noffH.initData.virtualAddr << ", " << noffH.initData.size);
-        executable->ReadAt(
-		&(kernel->machine->mainMemory[pageTable[noffH.initData.virtualAddr/PageSize].physicalPage * PageSize + noffH.initData.virtualAddr % PageSize]),
-			noffH.initData.size, noffH.initData.inFileAddr);
-    }
+	// if (noffH.code.size > 0) {
+    //     DEBUG(dbgAddr, "Initializing code segment.");
+	// DEBUG(dbgAddr, noffH.code.virtualAddr << ", " << noffH.code.size);
+    //     	executable->ReadAt(
+	// 	&(kernel->machine->mainMemory[pageTable[noffH.code.virtualAddr/PageSize].physicalPage * PageSize + noffH.code.virtualAddr % PageSize]), 
+	// 		noffH.code.size, noffH.code.inFileAddr);
+    // }
+	// if (noffH.initData.size > 0) {
+    //     DEBUG(dbgAddr, "Initializing data segment.");
+	// DEBUG(dbgAddr, noffH.initData.virtualAddr << ", " << noffH.initData.size);
+    //     executable->ReadAt(
+	// 	&(kernel->machine->mainMemory[pageTable[noffH.initData.virtualAddr/PageSize].physicalPage * PageSize + noffH.initData.virtualAddr % PageSize]),
+	// 		noffH.initData.size, noffH.initData.inFileAddr);
+    // }
 
     delete executable;			// close file
     return TRUE;			// success
@@ -250,4 +259,53 @@ void AddrSpace::RestoreState()
 {
     kernel->machine->pageTable = pageTable;
     kernel->machine->pageTableSize = numPages;
+}
+
+FrameInfoEntry::FrameInfoEntry(): valid(false), lock(false), pageTable(0), vpn(0) {}
+
+MemoryManager::MemoryManager() : count(0){
+    frameTable = new FrameInfoEntry[NumPhysPages];
+    swapTable  = new FrameInfoEntry[NumSectors];
+}
+
+MemoryManager::~MemoryManager(){
+    delete [] frameTable;
+    delete [] swapTable;
+}
+
+bool MemoryManager::AcquirePage(TranslationEntry *pageTable, int vpn) {
+    for (size_t i = 0; i < NumPhysPages; ++i) {
+        if(!frameTable[i].valid){
+            SetNewPage(pageTable, vpn, i);
+            return true;
+        }
+    }
+
+    // no free page
+    return false;   
+}
+
+void MemoryManager::ReleaseAll(TranslationEntry *pageTable, int num){
+    int total = 0;
+    for (size_t i = 0; i < num; ++i){   
+        if(frameTable[pageTable[i].physicalPage].valid){
+            frameTable[pageTable[i].physicalPage].valid = false;
+            ++total;
+        }
+    }
+}
+
+void MemoryManager::SetNewPage(TranslationEntry *pageTable, int vpn, int ppn){
+    pageTable[vpn].virtualPage = vpn;
+    pageTable[vpn].physicalPage = ppn;
+    pageTable[vpn].valid = true;
+    pageTable[vpn].use = false;
+    pageTable[vpn].dirty = false;
+    pageTable[vpn].readOnly = false;
+
+    frameTable[ppn].valid = true;
+    frameTable[ppn].lock = false;
+    frameTable[ppn].pageTable = pageTable;
+    frameTable[ppn].vpn = vpn;
+    frameTable[ppn].count = count++;
 }
