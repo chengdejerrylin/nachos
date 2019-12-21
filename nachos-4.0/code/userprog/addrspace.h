@@ -60,11 +60,9 @@ class MemoryManager {
     MemoryManager();
     ~MemoryManager();
 
+    bool AccessPage(TranslationEntry *pageTable, int vpn);
     bool AcquirePage(TranslationEntry *pageTable, int vpn); // ask a page (frame) for vpn
     void ReleaseAll(TranslationEntry *pageTable, int num);
-    void PageFaultHandler();
-    // will be called when manager want to swap a page from SwapTable 
-    // to FrameTable and the FrameTable is full.
 
   private :
     FrameInfoEntry *frameTable;
@@ -72,6 +70,8 @@ class MemoryManager {
     unsigned count;
 
     void SetNewPage(TranslationEntry *pageTable, int vpn, int ppn);
+    bool RestorePage(TranslationEntry *pageTable, int vpn, int ppn);
+    int  SavePage();
 
 };
 

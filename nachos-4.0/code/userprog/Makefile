@@ -1705,7 +1705,13 @@ addrspace.o: ../userprog/addrspace.cc /usr/include/stdc-predef.h \
  ../threads/alarm.h ../machine/callback.h ../machine/timer.h \
  ../filesys/filesys.h ../filesys/openfile.h ../filesys/synchdisk.h \
  ../machine/disk.h ../threads/synch.h ../threads/main.h \
- ../userprog/addrspace.h ../bin/noff.h
+ ../userprog/addrspace.h ../bin/noff.h /usr/include/c++/4.8/climits \
+ /usr/lib/gcc/i686-linux-gnu/4.8/include-fixed/limits.h \
+ /usr/lib/gcc/i686-linux-gnu/4.8/include-fixed/syslimits.h \
+ /usr/include/limits.h /usr/include/i386-linux-gnu/bits/posix1_lim.h \
+ /usr/include/i386-linux-gnu/bits/local_lim.h /usr/include/linux/limits.h \
+ /usr/include/i386-linux-gnu/bits/posix2_lim.h \
+ /usr/include/i386-linux-gnu/bits/xopen_lim.h
 exception.o: ../userprog/exception.cc /usr/include/stdc-predef.h \
  ../lib/copyright.h ../threads/main.h ../lib/debug.h ../lib/copyright.h \
  ../lib/utility.h ../lib/sysdep.h /usr/include/c++/4.8/iostream \

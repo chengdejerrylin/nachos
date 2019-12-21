@@ -12,6 +12,8 @@
 #ifndef USERKERNEL_H  
 #define USERKERNEL_H
 
+#define FILESYS
+
 #include "kernel.h"
 #include "filesys.h"
 #include "machine.h"

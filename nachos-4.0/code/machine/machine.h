@@ -131,7 +131,7 @@ class Machine {
 					// "read-only" to Nachos kernel code
 
     TranslationEntry *pageTable;
-	MemoryManager * memmgr;
+	MemoryManager *memmgr;
     unsigned int pageTableSize;
     bool ReadMem(int addr, int size, int* value);
   private:

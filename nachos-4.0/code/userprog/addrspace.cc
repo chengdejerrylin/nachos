@@ -22,6 +22,7 @@
 #include "machine.h"
 #include "noff.h"
 #include "disk.h"
+#include <climits>
 
 //----------------------------------------------------------------------
 // SwapHeader
@@ -241,10 +242,11 @@ AddrSpace::InitRegisters()
 //	For now, don't need to save anything!
 //----------------------------------------------------------------------
 
-void AddrSpace::SaveState() 
-{
+void AddrSpace::SaveState() {
+    if(kernel->machine->pageTableSize){
         pageTable=kernel->machine->pageTable;
         numPages=kernel->machine->pageTableSize;
+    }
 }
 
 //----------------------------------------------------------------------
@@ -282,7 +284,11 @@ bool MemoryManager::AcquirePage(TranslationEntry *pageTable, int vpn) {
     }
 
     // no free page
-    return false;   
+    int page = SavePage();
+    if(page == -1) return false;  
+    
+    SetNewPage(pageTable, vpn, page);
+    return true;
 }
 
 void MemoryManager::ReleaseAll(TranslationEntry *pageTable, int num){
@@ -293,9 +299,43 @@ void MemoryManager::ReleaseAll(TranslationEntry *pageTable, int num){
             ++total;
         }
     }
+
+    if(total == num)return;
+
+    for (size_t i = 0; i < NumSectors; i++){
+        if(swapTable[i].valid && swapTable[i].pageTable == pageTable){
+            swapTable[i].valid = false;
+            ++total;
+            if(total == num)return;
+        }
+    }
+
+    ASSERTNOTREACHED();
+}
+
+bool MemoryManager::AccessPage(TranslationEntry *pageTable, int vpn){
+    if(pageTable[vpn].valid){
+        frameTable[pageTable[vpn].physicalPage].count = count++;
+        return true;
+    }
+
+    int ppn = -1;
+    for(size_t i = 0; i < NumPhysPages; ++i){
+        if(!frameTable[i].valid){
+            ppn = i;
+            break;
+        }
+    }
+    if(ppn == -1)ppn = SavePage();
+    ASSERT(ppn != -1);
+    ASSERT(RestorePage(pageTable, vpn, ppn));
+
+    frameTable[pageTable[vpn].physicalPage].count = count++;
+    return true;
 }
 
 void MemoryManager::SetNewPage(TranslationEntry *pageTable, int vpn, int ppn){
+    DEBUG(dbgAddr, "pageTable " << unsigned(pageTable) << ", vpn " << vpn << " to ppn " << ppn);
     pageTable[vpn].virtualPage = vpn;
     pageTable[vpn].physicalPage = ppn;
     pageTable[vpn].valid = true;
@@ -308,4 +348,57 @@ void MemoryManager::SetNewPage(TranslationEntry *pageTable, int vpn, int ppn){
     frameTable[ppn].pageTable = pageTable;
     frameTable[ppn].vpn = vpn;
     frameTable[ppn].count = count++;
+}
+
+int MemoryManager::SavePage(){
+    unsigned page = 3, value = UINT_MAX;
+    for (size_t i = 0; i < NumPhysPages; i++) {
+        ASSERT(frameTable[i].valid);
+        if(frameTable[i].count < value){
+            value = frameTable[i].count;
+            page = i;
+        }
+    }
+
+    for(size_t i = 0; i < NumSectors; ++i){
+
+        if(!swapTable[i].valid){
+            int paddr = frameTable[i].pageTable[frameTable[i].vpn].physicalPage * PageSize;
+            kernel->synchDisk->WriteSector(i, kernel->machine->mainMemory + paddr);
+
+            swapTable[i].valid = true;
+            swapTable[i].lock = false;
+            swapTable[i].pageTable =frameTable[page].pageTable;
+            swapTable[i].vpn = frameTable[page].vpn;
+
+            frameTable[page].valid = false;
+            frameTable[page].pageTable[frameTable[page].vpn].valid = false;
+            return page;
+        }
+    }
+
+    return -1;
+}
+
+bool MemoryManager::RestorePage(TranslationEntry *pageTable, int vpn, int ppn){
+    ASSERT(!frameTable[ppn].valid);
+
+    for (size_t i = 0; i < NumSectors; ++i){
+        if(swapTable[i].valid && swapTable[i].pageTable == pageTable && swapTable[i].vpn == vpn){
+            kernel->synchDisk->ReadSector(i, kernel->machine->mainMemory + ppn * PageSize);
+
+            frameTable[ppn].valid = true;
+            frameTable[ppn].lock = false;
+            frameTable[ppn].pageTable = pageTable;
+            frameTable[ppn].vpn = vpn;
+            frameTable[ppn].count = count++;
+            pageTable[vpn].valid = true;
+
+            swapTable[i].valid = false;
+
+            return true;
+        }
+    }
+
+    return false;
 }
