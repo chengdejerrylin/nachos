@@ -10,8 +10,8 @@ all:
 	cd threads; $(MAKE) nachos
 	cd userprog; $(MAKE) depend 
 	cd userprog; $(MAKE) nachos 
-	# cd filesys; $(MAKE) depend
-	# cd filesys; $(MAKE) nachos 
+	cd filesys; $(MAKE) depend
+	cd filesys; $(MAKE) nachos 
 	# cd network; $(MAKE) depend
 	# cd network; $(MAKE) nachos 
 	cd bin; $(MAKE) all

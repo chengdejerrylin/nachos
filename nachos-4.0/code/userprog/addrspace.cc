@@ -18,6 +18,7 @@
 #include "copyright.h"
 #include "main.h"
 #include "addrspace.h"
+#include "filesys.h"
 #include "machine.h"
 #include "noff.h"
 

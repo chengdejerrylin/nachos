@@ -14,9 +14,7 @@
 #define ADDRSPACE_H
 
 #include "copyright.h"
-#include "filesys.h"
 #include <string.h>
-#include "machine.h"
 
 #define UserStackSize		1024 	// increase this as necessary!
 
@@ -43,10 +41,36 @@ class AddrSpace {
     void InitRegisters();		// Initialize user-level CPU registers,
 					// before jumping to user code
 
-    static unsigned UnusedPhyPage[NumPhysPages];
+    static unsigned UnusedPhyPage[32];
     static bool IsInit;
     static unsigned UnusedPhyPageStart, UnusedPhyPageEnd, RemainPhyPages;
 
 };
+
+class FrameInfoEntry {
+    bool valid; //if being used
+    bool lock;
+    AddrSpace *addrSpace; //which process is using this page
+    unsigned int vpn; //which virtual page of the process is stored in
+                      //this page
+};
+
+class MemoryManager {
+  public:
+
+    void Initialize();
+
+    int TransAddr(AddrSpace *space, int virtAddr); // return phyAddr (translated from virtAddr)
+
+    bool AcquirePage(AddrSpace *space, int vpn); // ask a page (frame) for vpn
+
+    bool ReleasePage(AddrSpace *space, int vpn); // free a page
+
+    void PageFaultHandler();
+    // will be called when manager want to swap a page from SwapTable 
+    // to FrameTable and the FrameTable is full.
+
+};
+
 
 #endif // ADDRSPACE_H
