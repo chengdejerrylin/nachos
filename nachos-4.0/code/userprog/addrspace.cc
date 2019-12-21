@@ -243,10 +243,10 @@ AddrSpace::InitRegisters()
 //----------------------------------------------------------------------
 
 void AddrSpace::SaveState() {
-    if(kernel->machine->pageTableSize){
-        pageTable=kernel->machine->pageTable;
-        numPages=kernel->machine->pageTableSize;
-    }
+    // if(kernel->machine->pageTableSize){
+    //     pageTable=kernel->machine->pageTable;
+    //     numPages=kernel->machine->pageTableSize;
+    // }
 }
 
 //----------------------------------------------------------------------
@@ -294,7 +294,7 @@ bool MemoryManager::AcquirePage(TranslationEntry *pageTable, int vpn) {
 void MemoryManager::ReleaseAll(TranslationEntry *pageTable, int num){
     int total = 0;
     for (size_t i = 0; i < num; ++i){   
-        if(frameTable[pageTable[i].physicalPage].valid){
+        if(pageTable[i].valid && frameTable[pageTable[i].physicalPage].valid){
             frameTable[pageTable[i].physicalPage].valid = false;
             ++total;
         }
@@ -335,7 +335,6 @@ bool MemoryManager::AccessPage(TranslationEntry *pageTable, int vpn){
 }
 
 void MemoryManager::SetNewPage(TranslationEntry *pageTable, int vpn, int ppn){
-    DEBUG(dbgAddr, "pageTable " << unsigned(pageTable) << ", vpn " << vpn << " to ppn " << ppn);
     pageTable[vpn].virtualPage = vpn;
     pageTable[vpn].physicalPage = ppn;
     pageTable[vpn].valid = true;
@@ -354,7 +353,7 @@ int MemoryManager::SavePage(){
     unsigned page = 3, value = UINT_MAX;
     for (size_t i = 0; i < NumPhysPages; i++) {
         ASSERT(frameTable[i].valid);
-        if(frameTable[i].count < value){
+        if(frameTable[i].count <= value){
             value = frameTable[i].count;
             page = i;
         }
@@ -365,6 +364,7 @@ int MemoryManager::SavePage(){
         if(!swapTable[i].valid){
             int paddr = frameTable[i].pageTable[frameTable[i].vpn].physicalPage * PageSize;
             kernel->synchDisk->WriteSector(i, kernel->machine->mainMemory + paddr);
+            DEBUG(dbgAddr, "save    vpn" << frameTable[page].vpn  << ", ppn" << page << ",   to segment" << i << ",");
 
             swapTable[i].valid = true;
             swapTable[i].lock = false;
@@ -382,17 +382,25 @@ int MemoryManager::SavePage(){
 
 bool MemoryManager::RestorePage(TranslationEntry *pageTable, int vpn, int ppn){
     ASSERT(!frameTable[ppn].valid);
+    ASSERT(!pageTable[vpn].valid);
 
     for (size_t i = 0; i < NumSectors; ++i){
         if(swapTable[i].valid && swapTable[i].pageTable == pageTable && swapTable[i].vpn == vpn){
-            kernel->synchDisk->ReadSector(i, kernel->machine->mainMemory + ppn * PageSize);
+            kernel->synchDisk->ReadSector(i, kernel->machine->mainMemory + (ppn * PageSize));
+            DEBUG(dbgAddr, "restore vpn" << vpn  << ", ppn" << ppn << ",from segment" << i << ",");
 
             frameTable[ppn].valid = true;
             frameTable[ppn].lock = false;
             frameTable[ppn].pageTable = pageTable;
             frameTable[ppn].vpn = vpn;
             frameTable[ppn].count = count++;
+
             pageTable[vpn].valid = true;
+            pageTable[vpn].dirty = false;
+            pageTable[vpn].physicalPage = ppn;
+            pageTable[vpn].readOnly = false;
+            pageTable[vpn].use = true;
+            pageTable[vpn].virtualPage = vpn;
 
             swapTable[i].valid = false;
 
