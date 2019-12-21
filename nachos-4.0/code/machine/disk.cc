@@ -147,6 +147,7 @@ Disk::WriteRequest(int sectorNumber, char* data)
     UpdateLast(sectorNumber);
     kernel->stats->numDiskWrites++;
     kernel->interrupt->Schedule(this, ticks, DiskInt);
+    DEBUG(dbgDisk, "Finish WriteRequest");
 }
 
 //----------------------------------------------------------------------

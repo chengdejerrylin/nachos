@@ -70,6 +70,7 @@ Machine::Machine(bool debug)
     tlb = NULL;
     pageTable = NULL;
 #endif
+    memmgr = new MemoryManager();
 
     singleStep = debug;
     CheckEndian();
@@ -85,6 +86,7 @@ Machine::~Machine()
     delete [] mainMemory;
     if (tlb != NULL)
         delete [] tlb;
+    delete memmgr;
 }
 
 //----------------------------------------------------------------------
